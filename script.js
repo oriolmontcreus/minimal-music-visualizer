@@ -90,6 +90,15 @@ function createGradientCanvas() {
   return canvas;
 }
 
+// Create stats element
+const statsElement = document.createElement('div');
+statsElement.style.position = 'absolute';
+statsElement.style.top = '10px';
+statsElement.style.right = '10px';
+statsElement.style.color = 'white';
+document.body.appendChild(statsElement);
+
+// Update stats
 function updateTorus() {
   if (analyser) {
     const data = new Uint8Array(analyser.frequencyBinCount);
@@ -100,6 +109,13 @@ function updateTorus() {
 
     const bassFrequency = data[0];
     torus.material.opacity = bassFrequency > 128 ? 0.5 + bassFrequency / 256 : 0.9;
+
+    // Update stats element
+    statsElement.innerHTML = `
+      <p>Frequency: ${bassFrequency.toFixed(2)}</p>
+      <p>Scale: ${scale.toFixed(2)}</p>
+      <p>Opacity: ${torus.material.opacity.toFixed(2)}</p>
+    `;
   }
 }
 
