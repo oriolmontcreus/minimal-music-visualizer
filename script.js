@@ -128,5 +128,31 @@ currentTimeController = gui.add(audioControls, 'currentTime', 0, 1).step(0.1).on
   audioElement.currentTime = value;
 });
 
+//Drag&Drop
+
+// Add drag and drop event listeners
+document.addEventListener('dragover', (event) => {
+  event.preventDefault();
+}, false);
+
+document.addEventListener('drop', async (event) => {
+  event.preventDefault();
+
+  audioElement.pause();
+  audioElement.currentTime = 0;
+
+  const file = event.dataTransfer.files[0];
+  const arrayBuffer = await file.arrayBuffer();
+
+  const blob = new Blob([arrayBuffer], { type: file.type });
+  const url = URL.createObjectURL(blob);
+
+  audioElement.src = url;
+
+  // Update the GUI controls
+  audioControls.currentTime = 0;
+  currentTimeController.updateDisplay();
+}, false);
+
 // Start animation
 animate();
