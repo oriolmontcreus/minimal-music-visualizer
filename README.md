@@ -1,5 +1,6 @@
 # 🎵 Minimal Music Visualizer 🎵
 
+[Try it here (Github Pages)](https://oriolmontcreus.github.io/threejs-music-visualizer/)
 Welcome to the Minimal Music Visualizer project! 🎉 This project is a simple, yet powerful, music visualizer built with JavaScript and Three.js. It allows you to visualize your favorite music tracks in a 3D environment with a rotating torus that reacts to the bass frequency of the audio.
 
 ## 🌟 Features
