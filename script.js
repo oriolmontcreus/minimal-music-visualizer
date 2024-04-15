@@ -96,6 +96,8 @@ statsElement.style.position = 'absolute';
 statsElement.style.top = '10px';
 statsElement.style.right = '10px';
 statsElement.style.color = 'white';
+statsElement.style.width = '100px';
+statsElement.style.textAlign = 'right';
 document.body.appendChild(statsElement);
 
 // Update stats
