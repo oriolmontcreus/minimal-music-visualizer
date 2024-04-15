@@ -165,6 +165,12 @@ document.addEventListener('drop', async (event) => {
   option.text = file.name;
   audioMenu.appendChild(option);
   audioElement.src = url;
+
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioContext.createAnalyser();
+  }
+
   source = audioContext.createMediaElementSource(audioElement);
   source.connect(analyser);
   source.connect(audioContext.destination);
