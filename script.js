@@ -6,6 +6,17 @@ let analyser;
 let audioElement;
 let source;
 audioElement = new Audio('./2minuteAmbient.mp3');
+audioElement.addEventListener('loadedmetadata', () => {
+  // Update the maximum value of the currentTime slider
+  currentTimeController.max(audioElement.duration);
+});
+audioElement.addEventListener('timeupdate', () => {
+  // Update the currentTime slider as the audio plays
+  audioControls.currentTime = audioElement.currentTime;
+  currentTimeController.updateDisplay();
+});
+
+let currentTimeController;
 
 
 async function startAudio() {
@@ -108,8 +119,17 @@ const audioControls = {
 
 gui.add(audioControls, 'play');
 gui.add(audioControls, 'pause');
-gui.add(audioControls, 'currentTime', 0, audioElement.duration).onChange((value) => {
+currentTimeController = gui.add(audioControls, 'currentTime', 0, 1).step(0.1).onChange((value) => {
   audioElement.currentTime = value;
 });
+
+// Modify the toString method of the currentTime controller
+currentTimeController.__li.getElementsByClassName('property-name')[0].innerHTML = 'currentTime';
+currentTimeController.__li.getElementsByClassName('c')[0].style.width = '60%';
+currentTimeController.toString = function() {
+  const minutes = Math.floor(this.getValue() / 60);
+  const seconds = Math.floor(this.getValue() % 60);
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+};
 
 animate();
