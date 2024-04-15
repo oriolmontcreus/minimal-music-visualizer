@@ -23,3 +23,8 @@ To get started with the Minimal Music Visualizer, you'll need to have [Visual St
 ## 👥 Contributing
 
 We welcome contributions to the Minimal Music Visualizer! If you have a feature request, bug report, or want to contribute to the code, please open an issue or submit a pull request.
+
+## 🎵 Songs used
+
+1. (audio1) -  [Arctic Monkeys - Do I Wanna Know? (Official Video)](https://youtu.be/bpOSxM0rNPM?si=yEhJSwwpv8GU3Nr3)
+2. (audio2) - [Short Meditation Music - 3 Minute Relaxation, Calming](https://youtu.be/cI4ryatVkKw?si=ZcHSKinqHLP5qAPz)
