@@ -1,0 +1,10 @@
+body {
+    background-color: #333;
+    margin: 0;
+}
+
+#gui-container {
+    transform: scale(2);
+    transform-origin: top left;
+    position: absolute;
+}
