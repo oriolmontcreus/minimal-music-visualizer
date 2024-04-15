@@ -13,7 +13,7 @@ Welcome to the Minimal Music Visualizer project! 🎉 This project is a simple, 
 
 To get started with the Minimal Music Visualizer, you'll need to have [Visual Studio Code](https://code.visualstudio.com/download) installed along with the [Live Server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).
 
-1. Clone this repository to your local machine using `git clone https://github.com/oriolmontcreus/minimal-music-visualizer.git`.
+1. Clone this repository to your local machine using `git clone https://github.com/oriolmontcreus/threejs-music-visualizer.git`.
 2. Open the project in Visual Studio Code.
 3. Right-click on the `index.html` file and select `Open with Live Server`.
 4. The project will open in your default browser, and you can start visualizing your music! 🎉
