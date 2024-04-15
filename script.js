@@ -23,6 +23,7 @@ const audioControls = {
     }
   },
   currentTime: 0,
+  audioUrl: '',
 };
 
 // Audio setup
@@ -130,26 +131,43 @@ currentTimeController = gui.add(audioControls, 'currentTime', 0, 1).step(0.1).on
 
 //Drag&Drop
 
-// Add drag and drop event listeners
+const audioUrls = [];
+const audioMenu = document.createElement('select');
+audioMenu.style.position = 'absolute';
+audioMenu.style.top = '10px';
+audioMenu.style.left = '500px';
+document.body.appendChild(audioMenu);
+
+audioMenu.addEventListener('change', (event) => {
+  audioElement.src = event.target.value;
+  source = audioContext.createMediaElementSource(audioElement);
+  source.connect(analyser);
+  source.connect(audioContext.destination);
+  audioControls.currentTime = 0;
+  currentTimeController.updateDisplay();
+});
+
 document.addEventListener('dragover', (event) => {
   event.preventDefault();
-}, false);
+});
 
 document.addEventListener('drop', async (event) => {
   event.preventDefault();
-
   audioElement.pause();
   audioElement.currentTime = 0;
-
   const file = event.dataTransfer.files[0];
   const arrayBuffer = await file.arrayBuffer();
-
   const blob = new Blob([arrayBuffer], { type: file.type });
   const url = URL.createObjectURL(blob);
-
+  audioUrls.push(url);
+  const option = document.createElement('option');
+  option.value = url;
+  option.text = file.name;
+  audioMenu.appendChild(option);
   audioElement.src = url;
-
-  // Update the GUI controls
+  source = audioContext.createMediaElementSource(audioElement);
+  source.connect(analyser);
+  source.connect(audioContext.destination);
   audioControls.currentTime = 0;
   currentTimeController.updateDisplay();
 }, false);
