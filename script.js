@@ -1,8 +1,31 @@
 import * as THREE from 'https://threejs.org/build/three.module.js';
 import * as dat from 'https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.module.js';
 
+// Audio variables
 let audioContext, analyser, audioElement, source, currentTimeController;
 
+// Scene variables
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+renderer.setClearColor( 0x00264d, 1 );
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// GUI
+const gui = new dat.GUI({ autoPlace: false });
+document.getElementById('gui-container').appendChild(gui.domElement);
+const audioControls = {
+  play: startAudio,
+  pause: () => {
+    if (!audioElement.paused) {
+      audioElement.pause();
+    }
+  },
+  currentTime: 0,
+};
+
+// Audio setup
 audioElement = new Audio('./2minuteAmbient.mp3');
 audioElement.addEventListener('loadedmetadata', () => {
   currentTimeController.max(audioElement.duration);
@@ -12,6 +35,7 @@ audioElement.addEventListener('timeupdate', () => {
   currentTimeController.updateDisplay();
 });
 
+// Audio functions
 async function startAudio() {
   if (!audioContext) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -25,25 +49,18 @@ async function startAudio() {
   }
 }
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-renderer.setClearColor( 0x00264d, 1 );
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-
+// Scene setup
 const texture = new THREE.CanvasTexture(createGradientCanvas());
-
 const torus = new THREE.Mesh(
   new THREE.TorusGeometry(1, 0.2, 16, 100),
   new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, transparent: true, opacity: 0.9 })
 );
 scene.add(torus);
-
 torus.rotation.x = Math.PI / 2;
 camera.position.set(0, 5, 5);
 camera.lookAt(0, 0, 0);
 
+// Scene functions
 function animate() {
   requestAnimationFrame(animate);
   updateTorus();
@@ -86,22 +103,12 @@ function updateTorus() {
   }
 }
 
-const gui = new dat.GUI({ autoPlace: false });
-document.getElementById('gui-container').appendChild(gui.domElement);
-const audioControls = {
-  play: startAudio,
-  pause: () => {
-    if (!audioElement.paused) {
-      audioElement.pause();
-    }
-  },
-  currentTime: 0,
-};
-
+// GUI setup
 gui.add(audioControls, 'play');
 gui.add(audioControls, 'pause');
 currentTimeController = gui.add(audioControls, 'currentTime', 0, 1).step(0.1).onChange((value) => {
   audioElement.currentTime = value;
 });
 
+// Start animation
 animate();
