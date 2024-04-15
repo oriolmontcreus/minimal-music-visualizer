@@ -27,7 +27,7 @@ const audioControls = {
 };
 
 // Audio setup
-audioElement = new Audio('./2minuteAmbient.mp3');
+audioElement = new Audio('./audio1.mp3');
 audioElement.addEventListener('loadedmetadata', () => {
   currentTimeController.max(audioElement.duration);
 });
@@ -132,51 +132,111 @@ currentTimeController = gui.add(audioControls, 'currentTime', 0, 1).step(0.1).on
 //Drag&Drop
 
 const audioUrls = [];
-const audioMenu = document.createElement('select');
-audioMenu.style.position = 'absolute';
-audioMenu.style.top = '10px';
-audioMenu.style.left = '500px';
-document.body.appendChild(audioMenu);
 
-audioMenu.addEventListener('change', (event) => {
-  audioElement.src = event.target.value;
+const audioMenu = createAudioMenu();
+
+// Load the audio files
+loadAudioFiles(['audio1.mp3', 'audio2.mp3'], audioMenu);
+
+// Handle the 'change' event
+audioMenu.addEventListener('change', handleAudioMenuChange);
+
+// Handle the 'dragover' event
+document.addEventListener('dragover', event => event.preventDefault());
+
+// Handle the 'drop' event
+document.addEventListener('drop', handleDropEvent);
+
+// Start animation
+animate();
+
+function createAudioMenu() {
+  const audioMenu = document.createElement('select');
+  audioMenu.style.position = 'absolute';
+  audioMenu.style.top = '10px';
+  audioMenu.style.left = '500px';
+  document.body.appendChild(audioMenu);
+  return audioMenu;
+}
+
+function loadAudioFiles(files, audioMenu) {
+  for (const file of files) {
+    fetch(file)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        const option = document.createElement('option');
+        option.value = url;
+        option.text = file;
+        audioMenu.appendChild(option);
+      });
+  }
+}
+
+function attachAudioEventListeners() {
+  audioElement.addEventListener('loadedmetadata', () => {
+    currentTimeController.max(audioElement.duration);
+  });
+  audioElement.addEventListener('timeupdate', () => {
+    audioControls.currentTime = audioElement.currentTime;
+    currentTimeController.updateDisplay();
+  });
+}
+
+// Attach event listeners to the initial audioElement
+attachAudioEventListeners();
+
+function handleAudioMenuChange(event) {
+  if (audioContext) audioContext.close();
+
+  audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioContext.createAnalyser();
+  
+  audioElement = new Audio(event.target.value);
+  audioElement.load();
+  
+  // Attach event listeners to the new audioElement
+  attachAudioEventListeners();
+  
   source = audioContext.createMediaElementSource(audioElement);
   source.connect(analyser);
   source.connect(audioContext.destination);
+  
   audioControls.currentTime = 0;
   currentTimeController.updateDisplay();
-});
+}
 
-document.addEventListener('dragover', (event) => {
+async function handleDropEvent(event) {
   event.preventDefault();
-});
-
-document.addEventListener('drop', async (event) => {
-  event.preventDefault();
-  audioElement.pause();
-  audioElement.currentTime = 0;
+  
+  if (audioContext) audioContext.close();
+  
+  audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioContext.createAnalyser();
+  
   const file = event.dataTransfer.files[0];
   const arrayBuffer = await file.arrayBuffer();
   const blob = new Blob([arrayBuffer], { type: file.type });
   const url = URL.createObjectURL(blob);
-  audioUrls.push(url);
+  
+  audioElement = new Audio(url);
+  audioElement.load();
+  
+  // Attach event listeners to the new audioElement
+  attachAudioEventListeners();
+  
+  source = audioContext.createMediaElementSource(audioElement);
+  source.connect(analyser);
+  source.connect(audioContext.destination);
+  
   const option = document.createElement('option');
   option.value = url;
   option.text = file.name;
   audioMenu.appendChild(option);
-  audioElement.src = url;
-
-  if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioContext.createAnalyser();
-  }
-
-  source = audioContext.createMediaElementSource(audioElement);
-  source.connect(analyser);
-  source.connect(audioContext.destination);
+  
+  // Set the new option as the selected option
+  option.selected = true;
+  
   audioControls.currentTime = 0;
   currentTimeController.updateDisplay();
-}, false);
-
-// Start animation
-animate();
+}
