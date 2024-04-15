@@ -2,7 +2,7 @@ import * as THREE from 'https://threejs.org/build/three.module.js';
 import * as dat from 'https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.module.js';
 
 //Minified three.js setup ----------
-let audioContext, analyser, audioElement = new Audio('./audio1.mp3'), source, currentTimeController;
+let audioContext, analyser, audioElement = new Audio('./media/audio1.mp3'), source, currentTimeController;
 const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000), renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }), gui = new dat.GUI({ autoPlace: false }), audioControls = { play: startAudio, pause: () => audioElement.paused || audioElement.pause(), currentTime: 0, audioUrl: '' }, texture = new THREE.CanvasTexture(createGradientCanvas()), torus = new THREE.Mesh(new THREE.TorusGeometry(1, 0.2, 16, 100), new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, transparent: true, opacity: 0.9 })), statsElement = document.createElement('div'), audioMenu = createAudioMenu();
 
 renderer.setClearColor(0x00264d, 1);
@@ -18,7 +18,7 @@ document.body.appendChild(statsElement);
 gui.add(audioControls, 'play');
 gui.add(audioControls, 'pause');
 currentTimeController = gui.add(audioControls, 'currentTime', 0, 1).step(0.1).onChange((value) => audioElement.currentTime = value);
-loadAudioFiles(['audio1.mp3', 'audio2.mp3'], audioMenu);
+loadAudioFiles(['./media/audio1.mp3', './media/audio2.mp3'], audioMenu);
 audioMenu.addEventListener('change', handleAudioMenuChange);
 document.addEventListener('dragover', event => event.preventDefault());
 document.addEventListener('drop', handleDropEvent);
