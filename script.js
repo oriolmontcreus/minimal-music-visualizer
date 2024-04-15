@@ -32,8 +32,6 @@ async function startAudio() {
   }
 }
 
-window.addEventListener('click', startAudio, { once: true });
-
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
@@ -98,16 +96,12 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-// GUI
+/// GUI
 const gui = new dat.GUI({ autoPlace: false });
 document.getElementById('gui-container').appendChild(gui.domElement);
 const audioControls = {
   play: () => {
-    if (!audioContext) {
-      startAudio();
-    } else if (audioElement.paused) {
-      audioElement.play();
-    }
+    startAudio();
   },
   pause: () => {
     if (!audioElement.paused) {
